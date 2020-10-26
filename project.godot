@@ -28,6 +28,7 @@ window/size/height=640
 
 2d_physics/layer_1="head"
 2d_physics/layer_2="food"
+2d_physics/layer_3="part"
 
 [rendering]
 

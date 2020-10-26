@@ -6,7 +6,7 @@ export var speed: = 100
 onready var head: = $Head
 onready var part = preload("res://scenes/Part.tscn")
 
-var direction: = Vector2(0, -1)
+var direction: = Vector2.UP
 var min_dist
 var part_size
 var parts = []
@@ -20,15 +20,14 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if Input.is_action_pressed("ui_down"):
-		direction = Vector2(0, 1)
-	if Input.is_action_pressed("ui_left"):
-		direction = Vector2(-1, 0)
-	if Input.is_action_pressed("ui_right"):
-		direction = Vector2(1, 0)
-	if Input.is_action_pressed("ui_up"):
-		direction = Vector2(0, -1)
-	#move_snake(delta)
+	if Input.is_action_pressed("ui_down") and direction != Vector2.UP:
+		direction = Vector2.DOWN
+	if Input.is_action_pressed("ui_left")  and direction != Vector2.RIGHT:
+		direction = Vector2.LEFT
+	if Input.is_action_pressed("ui_right") and direction != Vector2.LEFT:
+		direction = Vector2.RIGHT
+	if Input.is_action_pressed("ui_up") and direction != Vector2.DOWN:
+		direction = Vector2.UP
 
 
 # checks if the next random food position is occupied by the snake
@@ -45,10 +44,11 @@ func add_part() -> void:
 	var p = part.instance()
 	if parts.empty():
 		p.position = head.position
+		head.position += direction * speed
 	else:
 		p.position = parts.back().position
 	parts.append(p)
-	add_child(p)
+	call_deferred("add_child", p)
 
 
 func move_snake() -> void:
@@ -56,4 +56,32 @@ func move_snake() -> void:
 		parts.back().position = head.position
 		parts.insert(0, parts.back())
 		parts.pop_back()
-	head.position += direction * speed
+	if is_screen_exited():
+		enter_screen()
+	else:
+		head.position += direction * speed
+
+
+func enter_screen() -> void:
+	if head.global_position.x < 0:
+		head.global_position.x = 640
+	elif head.global_position.x > 640:
+		head.global_position.x = 0
+	elif head.global_position.y < 0:
+		head.global_position.y = 640
+	elif head.global_position.y > 640:
+		head.global_position.y = 0
+
+
+func is_screen_exited() -> bool:
+	var left = head.global_position.x < 0
+	var right = head.global_position.x > 640
+	var up = head.global_position.y < 0
+	var down = head.global_position.y > 640
+	if left or right or up or down:
+		return true
+	return false
+
+
+func _on_Head_area_entered(area: Area2D) -> void:
+	get_tree().reload_current_scene()

@@ -10,7 +10,7 @@ var screen_size
 func _ready() -> void:
 	randomize()
 	screen_size = get_viewport_rect().size
-	spawn_food()
+	#spawn_food()
 	
 	
 func random_pos() -> Vector2:
@@ -25,12 +25,20 @@ func random_pos() -> Vector2:
 	
 func spawn_food() -> void:
 	var p = random_pos()
-	var f = food.instance()
-	f.position = p
-	f.connect("eaten", self, "on_eaten")
-	add_child(f)
+	#var f = food.instance()
+	$Food.position = p
+	#f.connect("eaten", self, "on_eaten")
+	#add_child(f)
 	
 	
 func on_eaten() -> void:
 	snake.add_part()
 	spawn_food()
+
+
+func _on_Food_eaten() -> void:
+	var p = random_pos()
+	$Food.position = p
+	snake.add_part()
+	$Food/CollisionShape2D.set_deferred("disabled", false)
+	#spawn_food()
