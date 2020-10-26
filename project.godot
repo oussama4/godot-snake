@@ -16,7 +16,18 @@ _global_script_class_icons={
 [application]
 
 config/name="snake"
+run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/width=640
+window/size/height=640
+
+[layer_names]
+
+2d_physics/layer_1="head"
+2d_physics/layer_2="food"
 
 [rendering]
 

@@ -12,10 +12,10 @@ layer = -1
 [node name="ColorRect" type="ColorRect" parent="Background"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.0941176, 0.0745098, 0.0745098, 1 )
+color = Color( 0.192157, 0.145098, 0.145098, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Snake" parent="." instance=ExtResource( 1 )]
-position = Vector2( 632, 426 )
+position = Vector2( 444, 390 )
