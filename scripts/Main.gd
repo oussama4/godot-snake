@@ -1,23 +1,30 @@
 extends Node2D
 
 
-onready var food = preload("res://scenes/Food.tscn")
-onready var snake: = $Snake
+onready var food_scene: = preload("res://scenes/Food.tscn")
+onready var snake_scene: = preload("res://scenes/Snake.tscn")
+#onready var border_res: StyleBoxFlat = preload("res://border_stylebox.tres")
+var snake
+var food
 
 var screen_size
+var score: = 0
 
 
 func _ready() -> void:
 	randomize()
+	$Score.hide()
 	screen_size = get_viewport_rect().size
-	#spawn_food()
-	
-	
+	Global.connect("score_changed", self, "update_ui")
+	Global.connect("game_over", self, "_on_game_over")
+
+
 func random_pos() -> Vector2:
-	var x = randi() % (int(screen_size.x) - 40) + 20
-	var y = randi() % (int(screen_size.y) - 40) + 20
+	var x = rand_range(20, screen_size.x - 20)
+	var y = rand_range(80, screen_size.y - 20)
 	var p =  Vector2(x, y)
 	if snake.is_position_full(p):
+		print("full")
 		return random_pos()
 	else:
 		return p
@@ -25,20 +32,36 @@ func random_pos() -> Vector2:
 	
 func spawn_food() -> void:
 	var p = random_pos()
-	#var f = food.instance()
-	$Food.position = p
-	#f.connect("eaten", self, "on_eaten")
-	#add_child(f)
-	
-	
-func on_eaten() -> void:
-	snake.add_part()
-	spawn_food()
+	food.position = p
+	food.get_node("CollisionShape2D").set_deferred("disabled", false)
 
 
 func _on_Food_eaten() -> void:
-	var p = random_pos()
-	$Food.position = p
+	spawn_food()
 	snake.add_part()
-	$Food/CollisionShape2D.set_deferred("disabled", false)
-	#spawn_food()
+	Global.score += 1
+	Engine.time_scale += 0.001
+
+
+func update_ui() -> void:
+	$Score/Label.text = str(Global.score)
+
+
+func _on_start_game() -> void:
+	$Score.show()
+	food = food_scene.instance()
+	snake = snake_scene.instance()
+	snake.position = $Position2D.position
+	add_child(snake)
+	var p = random_pos()
+	food.position = p
+	add_child(food)
+	food.connect("eaten", self, "_on_Food_eaten")
+
+
+func _on_game_over() -> void:
+	$Score.hide()
+	food.queue_free()
+	snake.queue_free()
+	Engine.time_scale = 1.0
+	$Screens.game_over()

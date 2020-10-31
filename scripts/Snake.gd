@@ -10,13 +10,15 @@ var direction: = Vector2.UP
 var min_dist
 var part_size
 var parts = []
+var screen_size
 
 
 func _ready() -> void:
 	$MoveTimer.start()
+	screen_size = get_viewport_rect().size
 	min_dist = head.get_node("Sprite").texture.get_size().x / 2
 	part_size = head.get_node("Sprite").texture.get_size().x / 5
-	
+
 
 
 func _process(delta: float) -> void:
@@ -32,10 +34,10 @@ func _process(delta: float) -> void:
 
 # checks if the next random food position is occupied by the snake
 func is_position_full(pos: Vector2) -> bool:
-	if pos.distance_to(head.position) < min_dist:
+	if pos.distance_to(head.global_position) < min_dist:
 		return true
 	for p in parts:
-		if pos.distance_to(p.position) < min_dist:
+		if pos.distance_to(p.global_position) < min_dist:
 			return true
 	return false
 
@@ -64,24 +66,24 @@ func move_snake() -> void:
 
 func enter_screen() -> void:
 	if head.global_position.x < 0:
-		head.global_position.x = 640
-	elif head.global_position.x > 640:
+		head.global_position.x = screen_size.x
+	elif head.global_position.x > screen_size.x:
 		head.global_position.x = 0
 	elif head.global_position.y < 0:
-		head.global_position.y = 640
-	elif head.global_position.y > 640:
+		head.global_position.y = screen_size.y
+	elif head.global_position.y > screen_size.y:
 		head.global_position.y = 0
 
 
 func is_screen_exited() -> bool:
 	var left = head.global_position.x < 0
-	var right = head.global_position.x > 640
+	var right = head.global_position.x > screen_size.x
 	var up = head.global_position.y < 0
-	var down = head.global_position.y > 640
+	var down = head.global_position.y > screen_size.y
 	if left or right or up or down:
 		return true
 	return false
 
 
 func _on_Head_area_entered(area: Area2D) -> void:
-	get_tree().reload_current_scene()
+	Global.died = true

@@ -1,0 +1,14 @@
+[gd_resource type="StyleBoxFlat" format=2]
+
+[resource]
+draw_center = false
+border_width_left = 5
+border_width_top = 50
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color( 0.168627, 0.101961, 0.101961, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 20
