@@ -6,9 +6,10 @@ onready var snake_scene: = preload("res://scenes/Snake.tscn")
 #onready var border_res: StyleBoxFlat = preload("res://border_stylebox.tres")
 var snake
 var food
-
 var screen_size
 var score: = 0
+
+export var max_score: = 600
 
 
 func _ready() -> void:
@@ -17,6 +18,7 @@ func _ready() -> void:
 	screen_size = get_viewport_rect().size
 	Global.connect("score_changed", self, "update_ui")
 	Global.connect("game_over", self, "_on_game_over")
+	Global.load_score()
 
 
 func random_pos() -> Vector2:
@@ -24,7 +26,6 @@ func random_pos() -> Vector2:
 	var y = rand_range(80, screen_size.y - 20)
 	var p =  Vector2(x, y)
 	if snake.is_position_full(p):
-		print("full")
 		return random_pos()
 	else:
 		return p
@@ -41,6 +42,11 @@ func _on_Food_eaten() -> void:
 	snake.add_part()
 	Global.score += 1
 	Engine.time_scale += 0.001
+	
+	# end of game
+	if Global.score >= max_score:
+		reset_game()
+		$Screens.finish()
 
 
 func update_ui() -> void:
@@ -60,8 +66,18 @@ func _on_start_game() -> void:
 
 
 func _on_game_over() -> void:
+	$Screens.game_over()
+	reset_game()
+
+
+func reset_game() -> void:
 	$Score.hide()
+	Global.score = 0
 	food.queue_free()
 	snake.queue_free()
 	Engine.time_scale = 1.0
-	$Screens.game_over()
+
+
+func _on_go_home() -> void:
+	reset_game()
+	$Screens.change_to_home()

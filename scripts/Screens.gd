@@ -43,3 +43,11 @@ func game_over():
 	change_screen($GameOverScreen)
 	$GameOverScreen/Score.text = "Score: %s" % Global.score
 	$GameOverScreen/HighScore.text = "High Score: %s" % Global.high_score
+
+
+func change_to_home() -> void:
+	change_screen($HomeScreen)
+
+
+func finish() -> void:
+	change_screen($EndScreen)

@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
+[ext_resource path="res://assets/images/Sky_gradient_8.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Main.gd" type="Script" id=2]
 [ext_resource path="res://assets/images/cherry.png" type="Texture" id=4]
 [ext_resource path="res://assets/default_font.tres" type="DynamicFont" id=5]
@@ -15,10 +16,10 @@ position = Vector2( 444, 390 )
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="ColorRect" type="ColorRect" parent="Background"]
+[node name="TextureRect" type="TextureRect" parent="Background"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.145098, 0.192157, 0.152941, 1 )
+texture = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -53,4 +54,5 @@ __meta__ = {
 }
 
 [node name="Screens" parent="." instance=ExtResource( 7 )]
+[connection signal="go_home" from="PauseLayer/PauseOverlay" to="." method="_on_go_home"]
 [connection signal="start_game" from="Screens" to="." method="_on_start_game"]
